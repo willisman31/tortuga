@@ -22,7 +22,7 @@ namespace tortuga
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((hostContext, services) => 
                 {
                     services.AddHostedService<Worker>();
                 });
@@ -77,9 +77,9 @@ namespace tortuga
 
         public static string SetUrl() {
             string prefix = protocol + "://";
-            string HostIp = prefix + GetIp() + ":" + port.ToString() + "/";
-            Console.WriteLine(HostIp);
-            return HostIp;
+            string HostAddress = prefix + "*" + ":" + port.ToString() + "/";
+            Console.WriteLine(HostAddress);
+            return HostAddress;
         }
 
         public static void RunServer()
@@ -89,7 +89,8 @@ namespace tortuga
                 HttpServer.listener.Prefixes.Add(HttpServer.url);
             } catch {
                 HttpServer.listener.Prefixes.Add("http://localhost:" + port.ToString() + "/");
-            } HttpServer.listener.Start();
+            } 
+            HttpServer.listener.Start();
             Console.WriteLine(value: $"Listening for connections on {HttpServer.url}");
 
             // Handle requests
@@ -133,11 +134,10 @@ namespace tortuga
                 // Write the response info
                 string disableSubmit = !runServer ? "disabled" : "";
                 byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit));
+                resp.ContentType = "text/html";
                 resp.ContentEncoding = Encoding.UTF8;
                 resp.ContentLength64 = data.LongLength;
-                resp.StatusCode = 200;
-                resp.ContentType = "text/html";
-                
+
                 // Write out to the response stream (asynchronously), then close it
                 await resp.OutputStream.WriteAsync(data, 0, data.Length);
                 resp.Close();

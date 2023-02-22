@@ -13,6 +13,7 @@ namespace tortuga
 
         public Worker(ILogger<Worker> logger)
         {
+            Program.Main(null);
             _logger = logger;
         }
 
